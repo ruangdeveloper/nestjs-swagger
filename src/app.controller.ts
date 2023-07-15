@@ -2,13 +2,24 @@ import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateNoteRequest, UpdateNoteRequest } from './app.request';
 import { Note } from './app.entity';
-import { ApiResponse } from './app.response';
+import {
+  ApiResponse,
+  NoteIndexResponseExample,
+  NoteShowResponseExample,
+  NoteStoreResponseExample,
+  NoteUpdateResponseExample,
+} from './app.response';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Note Endpoints')
 @Controller('notes')
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Get()
+  @ApiOkResponse({
+    type: () => NoteIndexResponseExample,
+  })
   index(): ApiResponse<Array<Note>> {
     const notes = this.appService.getAllNotes();
 
@@ -19,6 +30,9 @@ export class AppController {
   }
 
   @Get(':id')
+  @ApiOkResponse({
+    type: () => NoteShowResponseExample,
+  })
   show(): ApiResponse<Note> {
     const note = this.appService.getNote();
 
@@ -29,6 +43,9 @@ export class AppController {
   }
 
   @Post()
+  @ApiOkResponse({
+    type: () => NoteStoreResponseExample,
+  })
   store(@Body() body: CreateNoteRequest): ApiResponse<Note> {
     const note = this.appService.createNote(body.title, body.description);
 
@@ -39,6 +56,9 @@ export class AppController {
   }
 
   @Put(':id')
+  @ApiOkResponse({
+    type: () => NoteUpdateResponseExample,
+  })
   update(@Body() body: UpdateNoteRequest): ApiResponse<Note> {
     const note = this.appService.updateNote(body.title, body.description);
 
